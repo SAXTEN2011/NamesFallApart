@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Names Fall Apart</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.16/p5.min.js"></script>
+    <script src="./collisison.js"></script>
+</head>
+
+<body style="overflow-x: hidden">
+    <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <script>
+        class Name {
+            constructor(ex, ey, n) {
+                this.x = ex;
+                this.y = ey;
+                this.name = n;
+            }
+        }
+
+
+        const potentialNames = ["Okonkwo", "Uminofana", "Cole", "Aaron", "Matt", "Thanh", "Iris", "Ugberth", "Uganda", "Ikmefauna", "Ugg", "Irene", "Ikebaud", "Bobby", "Frank", "Thomas", "Ivan", "Orwill", "Orie", "Opal", "Hartman", "Kara", "Olaf", "Pablo", "George", "Okmulege", "Uma", "Don't Hit This", "Loser", "Tanner", "Ray", "U Lose", "U Name", "I Name", "O Name", "Osiris", "Opal", "Shen", "Pineapple", "Pizza", "Gnome God"];
+
+        let names = [];
+
+        function setup() {
+            createCanvas(innerWidth, innerHeight - 20);
+            for (let i = 0; i < 3; i++) {
+                names.push(new Name(Math.floor(Math.random() * innerWidth), Math.floor(Math.random() * -300) + 100, potentialNames[Math.floor(Math.random() * potentialNames.length)]));
+            }
+        }
+
+        const GRAVITY = 3;
+
+        let bucketPos = [innerWidth / 2 - 100, innerHeight - 50];
+
+        let score = 0;
+let lost = false;
+
+        function endGame(){
+            names = [];
+            fill(255,0,0)
+            // text("You Lose!", innerWidth / 2 - (32*8/2), innerHeight / 2);
+            alert("You Lose!");
+            lost = true;
+
+            setTimeout(function(){
+                window.location.reload();
+            },2000);
+        }
+
+        function draw() {
+            if(lost){
+                return;
+            }
+            background(255);
+            textSize(32);
+            names.forEach(function (element) {
+                // console.log(element);
+                console.log(element.name);
+                text(element.name, element.x, element.y);
+                // element.x += GRAVITY;
+                element.y += GRAVITY;
+                if (element.y > innerHeight - 50) {
+                    // alert("end");
+
+                    if (bucketPos[0] < element.x && bucketPos[0] + 200 > element.x) {
+                        let initial = element.name.substring(0, 1).toLowerCase();
+                        if (initial === "u" || initial === "o" || initial === "i") {
+                            endGame();
+                        } else {
+                            score++;
+                            for (let i = 0; i < 2; i++) {
+                                names.push(new Name(Math.floor(Math.random() * innerWidth), Math.floor(Math.random() *
+                                    -1000) + 100, potentialNames[Math.floor(Math.random() * potentialNames.length)]));
+                            }
+                        }
+                    }else{
+                        let initial = element.name.substring(0, 1).toLowerCase();
+                        if (initial === "u" || initial === "o" || initial === "i") {
+                            score++;
+
+                            for (let i = 0; i < 2; i++) {
+                                names.push(new Name(Math.floor(Math.random() * innerWidth), Math.floor(Math.random() *
+                                    -1000) + 100, potentialNames[Math.floor(Math.random() * potentialNames.length)]));
+                            }
+                        }else{
+                            score--;
+                        }
+                    }
+
+                    names.splice(names.indexOf(element), 1);
+                }
+            }, this);
+
+            fill(0)
+            rect(bucketPos[0], bucketPos[1], 200, 25);
+            text("Score: " + score, 10,50);
+        }
+
+        document.addEventListener("keydown", function (e) {
+            console.log(e.key);
+            if (e.key === "ArrowRight") {
+                bucketPos[0] += 50;
+            } else if (e.key === "ArrowLeft") {
+                bucketPos[0] -= 50;
+            }
+        })
+    </script>
+</body>
+
+</html>
